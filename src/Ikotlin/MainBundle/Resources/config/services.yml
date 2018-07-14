@@ -1,0 +1,4 @@
+services:
+#    ikotlin_main.example:
+#        class: Ikotlin\MainBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

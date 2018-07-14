@@ -1,0 +1,16 @@
+ikotlin_user:
+    resource: "@IkotlinMainBundle/Controller/UserController.php"
+    prefix:   /
+    type:     annotation
+ikotlin_forums:
+    resource: "@IkotlinMainBundle/Controller/ForumController.php"
+    prefix:   /
+    type:     annotation
+ikotlin_competitions:
+    resource: "@IkotlinMainBundle/Controller/CompetitionController.php"
+    prefix:   /
+    type:     annotation
+ikotlin_main:
+    resource: "@IkotlinMainBundle/Resources/config/routing.yml"
+    prefix:   /
+
