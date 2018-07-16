@@ -35,7 +35,6 @@ class ForumController extends Controller
                 /** check for the search key / orderby */
                     $key=$request->get("keysearch");
                     $orderby=$request->get("orderby");
-
                     $forums=$em->getRepository("IkotlinMainBundle:Forum_question")->getForumsBy($starts_at,$length,$key,$orderby);
 
                 return new View(array("forum"=>$forums),Response::HTTP_OK);

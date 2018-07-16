@@ -13,161 +13,167 @@ use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+class UserController extends Controller {
 
-class UserController extends Controller
-{
     /**
-     * @Rest\Get("/user/authentification")
+     * @Rest\Get("/users/authentification")
      */
-    public function logUserInAction(Request $request){
-        $id=$request->get("id");
+    public function logUserInAction(Request $request) {
+        $id = $request->get("id");
 
-        if(empty($id))
-        {
-            return new View(array("Error"=>"Empty data.."),Response::HTTP_OK);
-        }
-        else{
+        if (empty($id)) {
+            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
                 $u->setLastlogged(new \DateTime());
                 $em->persist($u);
                 $em->flush();
-                return new View(array("user"=>$u),Response::HTTP_ACCEPTED);
+                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
             }
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Post("/user/register")
+     * @Rest\Post("/users/register")
      */
-    public function registerUserAction(Request $request){
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $email=$request["email"];
-        $username=$request["username"];
+    public function registerUserAction(Request $request) {
+        $request = json_decode($request->getContent(), true);
+        $id = $request['id'];
+        $email = $request["email"];
+        $username = $request["username"];
+        $pictureUrl = $request["pictureUrl"];
 
-        if(empty($email) || empty($id) || empty($username))
-        {
-            return new View(array("Error"=>"Empty data (not created).."),Response::HTTP_OK);
-        }
-        else{
+        if (empty($email) || empty($id) || empty($username)) {
+            return new View(array("Error" => "Empty data (not created).."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $usersByEmail=$em->getRepository("IkotlinMainBundle:User")->findBy(array("email"=>$email));
+            $usersByEmail = $em->getRepository("IkotlinMainBundle:User")->findBy(array("email" => $email));
 
-            if(!empty($usersByEmail))
-                return new View(array("Error"=>"User already exists"),Response::HTTP_OK);
+            if (!empty($usersByEmail))
+                return new View(array("Error" => "User already exists"), Response::HTTP_OK);
 
-            $u=new User();
+            $u = new User();
             $u->setId($id);
             $u->setEmail($email);
             $u->setUsername($username);
+            $u->setPicture($pictureUrl);
 
 
             $em->persist($u);
             $em->flush();
 
-            if(!empty($u)) return new View(array("user"=>$u),Response::HTTP_ACCEPTED);
+            if (!empty($u))
+                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
-
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Post("/user/setprofilepicture")
+     * @Rest\Get("/users/getUser")
      */
-    public function setprofilepictureurlAction(Request $request){
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $profile_picture=$request['profile_picture'];
-
-        if(empty($id)||empty($profile_picture))
-        {
-            return new View(array("Error"=>"Empty data.."),Response::HTTP_OK);
-        }
-        else{
+    public function getUserAction(Request $request) {
+        $id = $request->get("id");
+        if (empty($id)) {
+            return new View(array("Error" => "Authentification.."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
+                return $u;
+              //  return new View(array("users" => $u), Response::HTTP_ACCEPTED);
+            }
+        }
+        return new View(array("Error" => "Wrong authentification.."), Response::HTTP_OK);
+    }
+
+    /**
+     * @Rest\Post("/users/setprofilepicture")
+     */
+    public function setprofilepictureurlAction(Request $request) {
+        $request = json_decode($request->getContent(), true);
+        $id = $request['id'];
+        $profile_picture = $request['profile_picture'];
+
+        if (empty($id) || empty($profile_picture)) {
+            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
                 $u->setPicture($profile_picture);
                 $em->persist($u);
                 $em->flush();
-                return new View(array("user"=>$u),Response::HTTP_ACCEPTED);
+                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
             }
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Post("/user/setbadges")
+     * @Rest\Post("/users/setbadges")
      */
-    public function setBadgesAction(Request $request){
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $badges=$request['badges'];
+    public function setBadgesAction(Request $request) {
+        $request = json_decode($request->getContent(), true);
+        $id = $request['id'];
+        $badges = $request['badges'];
 
-        if(empty($id)||empty($badges))
-        {
-            return new View(array("Error"=>"Empty data.."),Response::HTTP_OK);
-        }
-        else{
+        if (empty($id) || empty($badges)) {
+            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
                 $u->setBadges($badges);
                 $em->persist($u);
                 $em->flush();
-                return new View(array("user"=>$u),Response::HTTP_ACCEPTED);
+                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
             }
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
     /**
-     * @Rest\Get("/user/getbadges")
+     * @Rest\Get("/users/getbadges")
      */
-    public function getBadgesAction(Request $request){
-        $id=$request->get("id");
+    public function getBadgesAction(Request $request) {
+        $id = $request->get("id");
 
-        if(empty($id))
-        {
-            return new View(array("Error"=>"Empty data.."),Response::HTTP_OK);
-        }
-        else{
+        if (empty($id)) {
+            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
-                return new View(array("badges"=>$u->getBadges()),Response::HTTP_ACCEPTED);
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
+                return new View(array("badges" => $u->getBadges()), Response::HTTP_ACCEPTED);
             }
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
-    
-        /**
-     * @Rest\Post("/user/setusername")
-     */
-    public function setUsernameAction(Request $request){
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $username=$request['username'];
 
-        if(empty($id)||empty($username))
-        {
-            return new View(array("Error"=>"Empty data.."),Response::HTTP_OK);
-        }
-        else{
+    /**
+     * @Rest\Post("/users/setusername")
+     */
+    public function setUsernameAction(Request $request) {
+        $request = json_decode($request->getContent(), true);
+        $id = $request['id'];
+        $username = $request['username'];
+
+        if (empty($id) || empty($username)) {
+            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
+        } else {
             $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
                 $u->setUsername($username);
                 $em->persist($u);
                 $em->flush();
-                return new View(array("user"=>$u),Response::HTTP_ACCEPTED);
+                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
             }
         }
-        return new View(array("Error"=>"Wrong entries .."),Response::HTTP_OK);
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
-
 
 }
