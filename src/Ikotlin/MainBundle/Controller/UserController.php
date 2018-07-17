@@ -88,7 +88,7 @@ class UserController extends Controller {
         }
         return new View(array("Error" => "Wrong authentification.."), Response::HTTP_OK);
     }
-
+    
     /**
      * @Rest\Post("/users/setprofilepicture")
      */

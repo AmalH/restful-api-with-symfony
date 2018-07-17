@@ -6,16 +6,23 @@
             <file>file:/C:/wamp/www/ikotlinBackEnd/web/app_dev.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/Resources/views/default/index.html.twig</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Repository/AnswerRepository.php</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Entity/Forum_question.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/config/parameters.yml</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/config/services.yml</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/config/config_dev.yml</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/IkotlinMainBundle.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/composer.json</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/var/logs/prod.log</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Controller/ForumController.php</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Repository/CourseRepository.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Controller/UserController.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/AppKernel.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/web/app.php</file>
             <file>file:/C:/wamp/www/ikotlinBackEnd/app/config/config.yml</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Entity/Course.php</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Controller/CoursesController.php</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/src/Ikotlin/MainBundle/Repository/forumQuestionRepository.php</file>
+            <file>file:/C:/wamp/www/ikotlinBackEnd/app/config/routing.yml</file>
         </group>
     </open-files>
 </project-private>

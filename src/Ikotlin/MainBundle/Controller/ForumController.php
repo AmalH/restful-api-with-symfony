@@ -16,9 +16,9 @@ use FOS\RestBundle\View\View;
 class ForumController extends Controller
 {
     /**
-     * @Rest\Get("/forum/getforums")
+     * @Rest\Get("/forums/getAllQuestions")
      */
-    public function forumInitialListAction(Request $request){
+    public function getAllQuestionsAction(Request $request){
         $id=$request->get("id");
         $starts_at=$request->get("start");
         if(empty($starts_at)) {$starts_at=0; $length=15;}
@@ -45,9 +45,9 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Post("/forum/addforum")
+     * @Rest\Post("/forums/addQuestion")
      */
-    public function addForumAction(Request $request){
+    public function addQuestionAction(Request $request){
 
         $request=json_decode($request->getContent(),true);
         $id=$request['id'];
@@ -81,25 +81,25 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Get("/forum/getforumcommments")
+     * @Rest\Get("/forums/getCommments")
      */
     public function getForumCommentsAction(Request $request){
         $id=$request->get("id");
-        $forumid=$request->get("forumid");
+        $questionId=$request->get("questionId");
         $starts_at=$request->get("start");
         if(empty($starts_at)) {$starts_at=0; $length=10;}
         else $length=8;
-        if(empty($id)|| empty($forumid))
+        if(empty($id)|| empty($questionId))
         {
             return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
         }
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
             if(!empty($u) && !empty($forum)) {
                 //do the work
-                $comments=$em->getRepository("IkotlinMainBundle:Answer")->getCommentsByForum($starts_at,$length,$forumid);
+                $comments=$em->getRepository("IkotlinMainBundle:Answer")->getCommentsByForum($starts_at,$length,$questionId);
                 return new View(array("comments"=>$comments),Response::HTTP_OK);
             }
         }
@@ -108,24 +108,24 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Post("/forum/addcomment")
+     * @Rest\Post("/forums/addComment")
      */
-    public function addCommentToForumAction(Request $request){
+    public function addCommentQuestionAction(Request $request){
         $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id)|| empty($forumid))
+        $questionId=$request->get("questionId");
+        if(empty($id)|| empty($questionId))
         {
             return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
         }
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
             if(!empty($u) && !empty($forum)) {
                 $a=new Answer();
                 $a->setIdUser($u);
                 $a->setIdForum($forum);
-                $a->setContent($request->get('commentcontent'));
+                $a->setContent($request->get('content'));
                 $em->persist($a);
                 $em->flush();
                 return new View(array("resp"=>"OK"),Response::HTTP_OK);
@@ -136,51 +136,19 @@ class ForumController extends Controller
 
 
     /**
-     * @Rest\Get("/forum/markview")
+     * @Rest\Get("/forums/questionUpvotes")
      */
-    public function markForumViewAction(Request $request){
+    public function questionUpVoteAction(Request $request){
         $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id)|| empty($forumid))
+        $questionId=$request->get("questionId");
+        if(empty($id)|| empty($questionId))
         {
             return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
         }
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
-            $v=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_view")->findBy(array("idForum"=>$forum,"idUser"=>$u));
-            if(empty($v)) {
-                $v=new forum_view();
-                $v->setIdForum($forum);
-                $v->setIdUser($u);
-                $em->persist($v);
-                $em->flush();
-                $count=count($em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_view")->findBy(array("idForum"=>$forum)));
-                $forum->setViews($count);
-                $em->persist($forum);
-                $em->flush();
-                return new View(array("resp"=>$count),Response::HTTP_OK);
-            }
-            else
-                return new View(array("resp"=>"no"),Response::HTTP_OK);
-        }
-    }
-
-    /**
-     * @Rest\Get("/forum/forum/upvote")
-     */
-    public function forumUpVoteAction(Request $request){
-        $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id)|| empty($forumid))
-        {
-            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
             $up=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(array("idForum"=>$forum,"idUser"=>$u,
                 "vote"=>1));
             $down=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(array("idForum"=>$forum,"idUser"=>$u,
@@ -218,19 +186,19 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Get("/forum/forum/downvote")
+     * @Rest\Get("/forums/questionDownvotes")
      */
-    public function forumDownVoteAction(Request $request){
+    public function questionDownVoteAction(Request $request){
         $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id)|| empty($forumid))
+        $questionId=$request->get("questionId");
+        if(empty($id)|| empty($questionId))
         {
             return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
         }
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
             $up=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(array("idForum"=>$forum,"idUser"=>$u,
                 "vote"=>1));
             $down=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(array("idForum"=>$forum,"idUser"=>$u,
@@ -268,9 +236,131 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Get("/forum/comment/upvote")
+     * @Rest\Get("/forums/markQuestionAsSeen")
      */
-    public function commentUpVoteAction(Request $request){
+    public function markQuestionAsSeenAction(Request $request){
+        $id=$request->get("id");
+        $questionId=$request->get("questionId");
+        if(empty($id)|| empty($questionId))
+        {
+            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
+            $v=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_view")->findBy(array("idForum"=>$forum,"idUser"=>$u));
+            if(empty($v)) {
+                $v=new forum_view();
+                $v->setIdForum($forum);
+                $v->setIdUser($u);
+                $em->persist($v);
+                $em->flush();
+                $count=count($em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_view")->findBy(array("idForum"=>$forum)));
+                $forum->setViews($count);
+                $em->persist($forum);
+                $em->flush();
+                return new View(array("resp"=>$count),Response::HTTP_OK);
+            }
+            else
+                return new View(array("resp"=>"no"),Response::HTTP_OK);
+        }
+    }
+    
+    /**
+     * @Rest\Get("/forums/getSingleQuestion")
+     */
+    public function getSingleQuestionAction(Request $request){
+        $id=$request->get("id");
+        $questionId=$request->get("questionId");
+        if(empty($id)|| empty($questionId))
+        {
+            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->getForumOptimized($questionId);
+            $selfVote=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(
+                array("idForum"=>$questionId,"idUser"=>$id));
+            if(empty($selfVote)) $selfVote=2;
+            else if($selfVote[0]->isVote() == false) $selfVote=-1;
+            else $selfVote=1;
+            if(!empty($forum)) {
+                return new View(array("forum"=>$forum,"selfvote"=>$selfVote),Response::HTTP_OK);
+            }
+            else
+                return new View(array("Error"=>"No forum to process..."),Response::HTTP_OK);
+        }
+    }
+
+    /**
+     * @Rest\Post("/forums/editQuestion")
+     */
+    public function editQuestionAction(Request $request){
+
+        $request=json_decode($request->getContent(),true);
+        $id=$request['id'];
+        $questionId=$request['questionId'];
+        if(empty($id) || empty($questionId))
+        {
+            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($questionId);
+            if(!empty($u) && !empty($forum) && $forum->getIdUser()==$u) {
+                $valid=true;
+                //do the work
+                if(!empty($request["subject"])) $forum->setSubject($request["subject"]); else $valid=false;
+                if(!empty($request["content"])) $forum->setContent($request["content"]); else $valid=false;
+                if(!empty($request["tags"])) $forum->setTags($request["tags"]);
+                $forum->setCode($request["code"]);
+                $forum->setEdited(new \DateTime());
+                if($valid){
+                    //add
+                    $em->persist($forum);
+                    $em->flush();
+                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
+                }
+            }
+        }
+        return new View(array("Error"=>"Wrong .."),Response::HTTP_OK);
+    }
+
+
+    /**
+     * @Rest\Get("/forums/deleteQuestion")
+     */
+    public function deleteQuestion(Request $request){
+
+        $id=$request->get("id");
+        $forumid=$request->get("forumid");
+        if(empty($id) || empty($forumid))
+        {
+            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
+            if(!empty($u) && !empty($forum) && $forum->getIdUser()==$u) {
+                $em->remove($forum);
+                $em->flush();
+                return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
+    }
+    
+        /********************************* COMMENTS *************************/
+
+
+    /**
+     * @Rest\Get("/forums/getCommentUpvotes")
+     */
+    public function getcommentUpvotesAction(Request $request){
         $id=$request->get("id");
         $commentid=$request->get("commentid");
         if(empty($id)|| empty($commentid))
@@ -318,9 +408,9 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Get("/forum/comment/downvote")
+     * @Rest\Get("/forums/getCommentDownvotes")
      */
-    public function commentDownVoteAction(Request $request){
+    public function getCommentDownvotesAction(Request $request){
         $id=$request->get("id");
         $commentid=$request->get("commentid");
         if(empty($id)|| empty($commentid))
@@ -366,98 +456,8 @@ class ForumController extends Controller
             }
         }
     }
-
     /**
-     * @Rest\Get("/forum/getsignleforum")
-     */
-    public function getForumAction(Request $request){
-        $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id)|| empty($forumid))
-        {
-            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->getForumOptimized($forumid);
-            $selfVote=$em->getRepository("Ikotlin\\MainBundle\\Entity\\forum_vote")->findBy(
-                array("idForum"=>$forumid,"idUser"=>$id));
-            if(empty($selfVote)) $selfVote=2;
-            else if($selfVote[0]->isVote() == false) $selfVote=-1;
-            else $selfVote=1;
-            if(!empty($forum)) {
-                return new View(array("forum"=>$forum,"selfvote"=>$selfVote),Response::HTTP_OK);
-            }
-            else
-                return new View(array("Error"=>"No forum to process..."),Response::HTTP_OK);
-        }
-    }
-
-
-
-    /**
-     * @Rest\Post("/forum/edit")
-     */
-    public function editForumAction(Request $request){
-
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $forumid=$request['idforum'];
-        if(empty($id) || empty($forumid))
-        {
-            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
-            if(!empty($u) && !empty($forum) && $forum->getIdUser()==$u) {
-                $valid=true;
-                //do the work
-                if(!empty($request["subject"])) $forum->setSubject($request["subject"]); else $valid=false;
-                if(!empty($request["content"])) $forum->setContent($request["content"]); else $valid=false;
-                if(!empty($request["tags"])) $forum->setTags($request["tags"]);
-                $forum->setCode($request["code"]);
-                $forum->setEdited(new \DateTime());
-                if($valid){
-                    //add
-                    $em->persist($forum);
-                    $em->flush();
-                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
-                }
-            }
-        }
-        return new View(array("Error"=>"Wrong .."),Response::HTTP_OK);
-    }
-
-
-    /**
-     * @Rest\Get("/forum/delete")
-     */
-    public function deleteForum(Request $request){
-
-        $id=$request->get("id");
-        $forumid=$request->get("forumid");
-        if(empty($id) || empty($forumid))
-        {
-            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $forum=$em->getRepository("IkotlinMainBundle:Forum_question")->find($forumid);
-            if(!empty($u) && !empty($forum) && $forum->getIdUser()==$u) {
-                $em->remove($forum);
-                $em->flush();
-                return new View(array("resp"=>"OK"),Response::HTTP_OK);
-            }
-        }
-        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
-    }
-
-    /**
-     * @Rest\Get("/comment/delete")
+     * @Rest\Get("forums/deleteComment")
      */
     public function deleteComment(Request $request){
 
@@ -481,9 +481,9 @@ class ForumController extends Controller
     }
 
     /**
-     * @Rest\Get("/forum/getmine")
+     * @Rest\Get("/forums/getCurrentUserQuestions")
      */
-    public function forumGetUsersAction(Request $request){
+    public function getCurrentUserQuestionsAction(Request $request){
         $id=$request->get("id");
         $starts_at=$request->get("start");
         if(empty($starts_at)) {$starts_at=0; $length=15;}
