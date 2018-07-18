@@ -52,8 +52,8 @@ class CoursesController extends Controller
                 $course= new Course();
                     $course->setUserid($u);
                     $course->setCourseindic($courseindic);
-                    $course->setEarnedbadge("0");
-                     $course->setFinishedchapter("0");
+                    $course->setEarnedbadge("100");
+                     $course->setFinishedchapter("100");
                     $em->persist($course);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
@@ -62,7 +62,7 @@ class CoursesController extends Controller
         return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
     }
     
-     /**
+    /**
      * @Rest\Get("/courses/courseStarted")
      */
     public function isHasCourseAction(Request $request){
@@ -85,10 +85,10 @@ class CoursesController extends Controller
         return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
     }
     
-     /**
+    /**
      * @Rest\Post("/courses/addCourseBadge")
      */
-    public function addBadgeActionToCourse(Request $request){
+    public function addBadgeToCourseAction(Request $request){
 
         $id=$request->get("id");
         $courseindic=$request->get("courseindic");
@@ -101,10 +101,39 @@ class CoursesController extends Controller
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $course =$em->getRepository("IkotlinMainBundle:Course")->isHasCourse($id,$courseindic);
+            $criteria = array('courseindic' => $courseindic,'userid' => $id);
+            $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
             if(!empty($u)) {
-                    $course->setEarnedbadge($badgeindic);
-                    $em->persist($course);
+                    $courses[0]->setEarnedbadge($badgeindic);
+                    $em->persist($courses[0]);
+                    $em->flush();
+                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
+    }
+    
+    /**
+     * @Rest\Post("/courses/finishedChapter")
+     */
+    public function updateFinishedChapters(Request $request){
+
+        $id=$request->get("id");
+        $courseindic=$request->get("courseindic");
+        $chapterindic=$request->get("chapterindic");
+
+        if(empty($id))
+        {
+            return new View(array("Error"=>"This user doesnt exist in database !"),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $criteria = array('courseindic' => $courseindic,'userid' => $id);
+            $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
+            if(!empty($u)) {
+                    $courses[0]->setFinishedChapter($chapterindic);
+                    $em->persist($courses[0]);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
             }
