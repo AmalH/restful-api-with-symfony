@@ -17,6 +17,16 @@ use Doctrine\ORM\Mapping as ORM;
 
 class Course
 {
+   
+    
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $id;
     
     /**
      * @var \User
@@ -25,8 +35,6 @@ class Course
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="userid", referencedColumnName="id" , onDelete="CASCADE")
      * })
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $userid;
 
@@ -36,6 +44,21 @@ class Course
      * @ORM\Column(name="courseindic", type="string", length=300, nullable=false)
      */
     private $courseindic;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="finishedchapter", type="string", length=300, nullable=true, options={"default":"0"})
+     */
+    private $finishedchapter;
+    
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="earnedbadge", type="string", length=300, nullable=true, options={"default":"0"})
+     */
+    private $earnedbadge;
+
 
  
     /**
@@ -43,25 +66,43 @@ class Course
      */
     public function __construct()
     {
-       // $this->setCreated(new \DateTime());
-        //$this->setViews(0);
-        //$this->setRating(0);
     }
+  
+    function getCourseindic() {
+        return $this->courseindic;
+    }
+
+    function setCourseindic($courseindic) {
+        $this->courseindic = $courseindic;
+    }
+
+        
     function getUserid() {
         return $this->userid;
     }
 
-    function getCourseindc() {
-        return $this->courseindc;
-    }
-
-    function setUserid(\User $userid) {
+    function setUserid($userid) {
         $this->userid = $userid;
     }
 
-    function setCourseindc($courseindc) {
-        $this->courseindc = $courseindc;
+    function getFinishedchapter() {
+        return $this->finishedchapter;
     }
+
+    function getEarnedbadge() {
+        return $this->earnedbadge;
+    }
+
+    function setFinishedchapter($finishedchapter) {
+        $this->finishedchapter = $finishedchapter;
+    }
+
+    function setEarnedbadge($earnedbadge) {
+        $this->earnedbadge = $earnedbadge;
+    }
+
+
+
 
 
 }

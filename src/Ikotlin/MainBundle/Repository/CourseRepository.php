@@ -21,5 +21,17 @@ class CourseRepository extends EntityRepository
         ;
         return $qb->getQuery()->getResult();
     }
-
+    
+    public function isHasCourse($id,$courseindic){
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('IDENTITY(f.userid)','f.courseindic')
+            ->from('IKotlin\MainBundle\Entity\Course', 'f')
+            ->where("f.userid = :id AND f.courseindic = :courseindic")
+            ->setParameter("id",$id)
+            ->setParameter("courseindic",$courseindic)
+        ;
+        return $qb->getQuery()->getResult();
+    }
+  
 }
