@@ -52,8 +52,8 @@ class CoursesController extends Controller
                 $course= new Course();
                     $course->setUserid($u);
                     $course->setCourseindic($courseindic);
-                    $course->setEarnedbadge("100");
-                     $course->setFinishedchapter("100");
+                    $course->setEarnedbadge("0");
+                     $course->setFinishedchapter("0");
                     $em->persist($course);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
@@ -120,7 +120,6 @@ class CoursesController extends Controller
 
         $id=$request->get("id");
         $courseindic=$request->get("courseindic");
-        $chapterindic=$request->get("chapterindic");
 
         if(empty($id))
         {
@@ -132,7 +131,9 @@ class CoursesController extends Controller
             $criteria = array('courseindic' => $courseindic,'userid' => $id);
             $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
             if(!empty($u)) {
-                    $courses[0]->setFinishedChapter($chapterindic);
+                    $initial = $courses[0]->getFinishedChapter();
+                    $val = (int)$initial+1;
+                    $courses[0]->setFinishedChapter((string)$val);
                     $em->persist($courses[0]);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
