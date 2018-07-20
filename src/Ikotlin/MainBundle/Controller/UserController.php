@@ -12,29 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Ikotlin\MainBundle\Entity\Badge;
 
 class UserController extends Controller {
-
-    /**
-     * @Rest\Get("/users/authentification")
-     */
-    public function logUserInAction(Request $request) {
-        $id = $request->get("id");
-
-        if (empty($id)) {
-            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if (!empty($u)) {
-                $u->setLastlogged(new \DateTime());
-                $em->persist($u);
-                $em->flush();
-                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
-            }
-        }
-        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
-    }
 
     /**
      * @Rest\Post("/users/register")
@@ -71,6 +51,73 @@ class UserController extends Controller {
         return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
+    
+    /**
+     * @Rest\Get("/users/getbadges")
+     */
+    /*public function getAllBadgesAction(Request $request) {
+        $id = $request->get("id");
+
+        if (empty($id)) {
+            return new View(array("Error" => "Please provide id !"), Response::HTTP_OK);
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
+                $badges=$em->getRepository("IkotlinMainBundle:Badge")->getUserBadges($id);
+                return new View(array("badges" =>$badges), Response::HTTP_ACCEPTED);
+            }
+        }
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
+    }*/
+    
+     /**
+     * @Rest\Post("/users/addbadge")
+     */
+    public function addBadgeAction(Request $request){
+
+        $id=$request->get("id");
+        $badgeindic=$request->get("badgeindic");
+
+        if(empty($id))
+        {
+            return new View(array("Error"=>"This user doesnt exist in database !"),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if(!empty($u)) {
+                $badge= new Badge();
+                    $badge->setUserid($u);
+                    $badge->setBadgeindic($badgeindic);
+                    $em->persist($badge);
+                    $em->flush();
+                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
+    }
+    
+     /**
+     * @Rest\Get("/users/hasbadge")
+     */
+    public function isHasBadgeAction(Request $request) {
+        $id = $request->get("id");
+        $badgeindic = $request->get("badgeindic");
+
+        if (empty($id)) {
+            return new View(array("Error" => "Please provide id !"), Response::HTTP_OK);
+        } else {
+            $em = $this->getDoctrine()->getManager();
+            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
+            if (!empty($u)) {
+                $badges=$em->getRepository("IkotlinMainBundle:Badge")->isUserHasBadge($id,$badgeindic);
+                return new View(array("badges" =>$badges), Response::HTTP_ACCEPTED);
+            }
+        }
+        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
+    }
+    
     /**
      * @Rest\Get("/users/getUser")
      */
@@ -111,48 +158,8 @@ class UserController extends Controller {
         }
         return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
-
-    /**
-     * @Rest\Post("/users/setbadges")
-     */
-    public function setBadgesAction(Request $request) {
-        $request = json_decode($request->getContent(), true);
-        $id = $request['id'];
-        $badges = $request['badges'];
-
-        if (empty($id) || empty($badges)) {
-            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if (!empty($u)) {
-                $u->setBadges($badges);
-                $em->persist($u);
-                $em->flush();
-                return new View(array("user" => $u), Response::HTTP_ACCEPTED);
-            }
-        }
-        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
-    }
-
-    /**
-     * @Rest\Get("/users/getbadges")
-     */
-    public function getBadgesAction(Request $request) {
-        $id = $request->get("id");
-
-        if (empty($id)) {
-            return new View(array("Error" => "Empty data.."), Response::HTTP_OK);
-        } else {
-            $em = $this->getDoctrine()->getManager();
-            $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if (!empty($u)) {
-                return new View(array("badges" => $u->getBadges()), Response::HTTP_ACCEPTED);
-            }
-        }
-        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
-    }
-
+    
+  
     /**
      * @Rest\Post("/users/setusername")
      */
