@@ -52,8 +52,8 @@ class CoursesController extends Controller
                 $course= new Course();
                     $course->setUserid($u);
                     $course->setCourseindic($courseindic);
-                    $course->setEarnedbadge("0");
-                     $course->setFinishedchapter("0");
+                    $course->setEarnedbadges("0");
+                     $course->setFinishedchapters("0");
                     $em->persist($course);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
@@ -104,7 +104,7 @@ class CoursesController extends Controller
             $criteria = array('courseindic' => $courseindic,'userid' => $id);
             $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
             if(!empty($u)) {
-                    $courses[0]->setEarnedbadge($badgeindic);
+                    $courses[0]->setEarnedbadges($badgeindic);
                     $em->persist($courses[0]);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);
@@ -131,9 +131,38 @@ class CoursesController extends Controller
             $criteria = array('courseindic' => $courseindic,'userid' => $id);
             $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
             if(!empty($u)) {
-                    $initial = $courses[0]->getFinishedChapter();
+                    $initial = $courses[0]->getFinishedChapters();
                     $val = (int)$initial+1;
-                    $courses[0]->setFinishedChapter((string)$val);
+                    $courses[0]->setFinishedChapters((string)$val);
+                    $em->persist($courses[0]);
+                    $em->flush();
+                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
+    }
+    
+     /**
+     * @Rest\Post("/courses/earnedBadges")
+     */
+    public function updateEarnedBadges(Request $request){
+
+        $id=$request->get("id");
+        $courseindic=$request->get("courseindic");
+
+        if(empty($id))
+        {
+            return new View(array("Error"=>"This user doesnt exist in database !"),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $criteria = array('courseindic' => $courseindic,'userid' => $id);
+            $courses =$em->getRepository("IkotlinMainBundle:Course")->findBy($criteria);
+            if(!empty($u)) {
+                    $initial = $courses[0]->getEarnedbadges();
+                    $val = (int)$initial+1;
+                    $courses[0]->setEarnedbadges((string)$val);
                     $em->persist($courses[0]);
                     $em->flush();
                     return new View(array("resp"=>"OK"),Response::HTTP_OK);

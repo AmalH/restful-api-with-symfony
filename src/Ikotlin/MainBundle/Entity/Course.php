@@ -9,7 +9,7 @@
 namespace Ikotlin\MainBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 /**
- * Forum_question
+ * ForumQuestion
  *
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\CourseRepository")
  * @ORM\Table(name="usercourses")
@@ -48,16 +48,16 @@ class Course
     /**
      * @var string
      *
-     * @ORM\Column(name="finishedchapter", type="string", length=300, nullable=true, options={"default":"0"})
+     * @ORM\Column(name="finishedchapters", type="string", length=300, nullable=true, options={"default":"0"})
      */
-    private $finishedchapter;
+    private $finishedchapters;
     
     /**
      * @var string
      *
-     * @ORM\Column(name="earnedbadge", type="string", length=300, nullable=true, options={"default":"0"})
+     * @ORM\Column(name="earnedbadges", type="string", length=300, nullable=true, options={"default":"0"})
      */
-    private $earnedbadge;
+    private $earnedbadges;
 
 
  
@@ -85,20 +85,20 @@ class Course
         $this->userid = $userid;
     }
 
-    function getFinishedchapter() {
-        return $this->finishedchapter;
+    function getFinishedchapters() {
+        return $this->finishedchapters;
     }
 
-    function getEarnedbadge() {
-        return $this->earnedbadge;
+    function getEarnedbadges() {
+        return $this->earnedbadges;
     }
 
-    function setFinishedchapter($finishedchapter) {
-        $this->finishedchapter = $finishedchapter;
+    function setFinishedchapters($finishedchapters) {
+        $this->finishedchapters = $finishedchapters;
     }
 
-    function setEarnedbadge($earnedbadge) {
-        $this->earnedbadge = $earnedbadge;
+    function setEarnedbadges($earnedbadges) {
+        $this->earnedbadges = $earnedbadges;
     }
 
 

@@ -14,7 +14,7 @@ class CourseRepository extends EntityRepository
     public function getUserCourses($id){
         $qb = $this->getEntityManager()->createQueryBuilder();
         $qb
-            ->select('IDENTITY(f.userid)','f.courseindic','f.finishedchapter','f.earnedbadge')
+            ->select('IDENTITY(f.userid)','f.courseindic','f.finishedchapters','f.earnedbadges')
             ->from('IKotlin\MainBundle\Entity\Course', 'f')
             ->where("f.userid = :id")
             ->setParameter("id",$id)

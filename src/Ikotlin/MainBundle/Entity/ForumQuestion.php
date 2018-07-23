@@ -9,14 +9,13 @@
 namespace Ikotlin\MainBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 /**
- * Forum_question
+ * ForumQuestion
  *
- * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\forumQuestionRepository")
- * @ORM\Table(name="forum_question")
+ * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\ForumQuestionRepository")
+ * @ORM\Table(name="forumquestions")
  */
 
-class Forum_question
-{
+class ForumQuestion{
     /**
      * @var integer
      *
@@ -97,7 +96,7 @@ class Forum_question
 
 
     /**
-     * Forum_question constructor.
+     * ForumQuestion constructor.
      */
     public function __construct()
     {

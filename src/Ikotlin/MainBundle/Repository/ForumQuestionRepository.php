@@ -8,7 +8,7 @@
 namespace Ikotlin\MainBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 
-class forumQuestionRepository extends EntityRepository
+class ForumQuestionRepository extends EntityRepository
 {
     public function getForumsBy($start,$length,$searchkey,$orderby){
 
@@ -34,7 +34,7 @@ class forumQuestionRepository extends EntityRepository
                 ->select('f.id','f.subject','f.created',
                     'f.rating','f.tags','f.views', 'f.edited as edited',
                     'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
-                ->from('IKotlin\MainBundle\Entity\Forum_question', 'f')
+                ->from('IKotlin\MainBundle\Entity\ForumQuestion', 'f')
                 ->leftJoin(
                     'IKotlin\MainBundle\Entity\User',
                     'u',
@@ -54,7 +54,7 @@ class forumQuestionRepository extends EntityRepository
                     'f.rating','f.tags','f.views','f.edited as edited',
                     'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
 
-                ->from('IKotlin\MainBundle\Entity\Forum_question', 'f')
+                ->from('IKotlin\MainBundle\Entity\ForumQuestion', 'f')
                 ->leftJoin(
                     'IKotlin\MainBundle\Entity\User',
                     'u',
@@ -79,7 +79,7 @@ class forumQuestionRepository extends EntityRepository
             ->select('f.id','f.subject','f.content','f.created',
                 'f.rating','f.tags','f.views','f.code as code','f.edited as edited',
                 'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
-            ->from('IKotlin\MainBundle\Entity\Forum_question', 'f')
+            ->from('IKotlin\MainBundle\Entity\ForumQuestion', 'f')
             ->leftJoin(
                 'IKotlin\MainBundle\Entity\User',
                 'u',
@@ -102,7 +102,7 @@ class forumQuestionRepository extends EntityRepository
             ->select('f.id','f.subject','f.created',
                 'f.rating','f.tags','f.views', 'f.edited as edited',
                 'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
-            ->from('IKotlin\MainBundle\Entity\Forum_question', 'f')
+            ->from('IKotlin\MainBundle\Entity\ForumQuestion', 'f')
             ->leftJoin(
                 'IKotlin\MainBundle\Entity\User',
                 'u',

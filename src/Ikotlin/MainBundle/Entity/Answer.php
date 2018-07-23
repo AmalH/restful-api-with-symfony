@@ -8,11 +8,13 @@
 
 namespace Ikotlin\MainBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
+
+
 /**
- * Forum_question
+ * ForumAnswer
  *
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\AnswerRepository")
- * @ORM\Table(name="forum_answer")
+ * @ORM\Table(name="forumanswers")
  */
 
 class Answer
@@ -37,9 +39,9 @@ class Answer
     private $idUser;
 
     /**
-     * @var \Forum_question
+     * @var \ForumQuestion
      *
-     * @ORM\ManyToOne(targetEntity="Forum_question")
+     * @ORM\ManyToOne(targetEntity="ForumQuestion")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="id_forum", referencedColumnName="id" , onDelete="CASCADE")
      * })
@@ -108,7 +110,7 @@ class Answer
     }
 
     /**
-     * @return \Forum_question
+     * @return \ForumQuestion
      */
     public function getIdForum()
     {
@@ -116,7 +118,7 @@ class Answer
     }
 
     /**
-     * @param \Forum_question $idForum
+     * @param \ForumQuestion $idForum
      */
     public function setIdForum($idForum)
     {

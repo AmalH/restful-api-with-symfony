@@ -3,7 +3,7 @@
 namespace Ikotlin\MainBundle\Controller;
 
 use Ikotlin\MainBundle\Entity\Competition;
-use Ikotlin\MainBundle\Entity\Competition_Answer;
+use Ikotlin\MainBundle\Entity\CompetitionAnswer;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -13,8 +13,12 @@ use FOS\RestBundle\View\View;
 class CompetitionController extends Controller
 {
 
+    /***************************************** 
+                  CONTESTS
+    *****************************************/
+    
     /**
-     * @Rest\Post("/competition/addcompetition")
+     * @Rest\Post("/competitions/addCompetition")
      */
     public function addCompetitionAction(Request $request){
 
@@ -47,42 +51,57 @@ class CompetitionController extends Controller
         }
         return new View(array("Error"=>"Wrong authentification.."),Response::HTTP_OK);
     }
-
-
+    
     /**
-     * @Rest\Post("/competition/addanswer")
+     * @Rest\Get("/competitions/deleteCompetition")
      */
-    public function addAnswerCompetitionAction(Request $request){
-        $request=json_decode($request->getContent(),true);
-        $id=$request['id'];
-        $competition=$request["competitionid"];
-        if(empty($id)|| empty($competition))
+    public function deleteCompetitionAction(Request $request){
+
+        $id=$request->get("id");
+        $competition=$request->get("competitionid");
+        if(empty($id) || empty($competition))
         {
-            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
+            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
         }
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
             $competition=$em->getRepository("IkotlinMainBundle:Competition")->find($competition);
-
-            if(!empty($u) && !empty($competition)) {
-                $a=new Competition_Answer();
-                $a->setIdUser($u);
-                $a->setIdCompetition($competition);
-                $a->setContent($request['content']);
-                $competition->setSolved($competition->getSolved()+1);
-                $em->persist($competition);
-                $em->persist($a);
+            if(!empty($u) && !empty($competition) && $competition->getIdUser()==$u) {
+                $em->remove($competition);
                 $em->flush();
                 return new View(array("resp"=>"OK"),Response::HTTP_OK);
             }
         }
-        return new View(array("Error"=>"Wrong authentification.."),Response::HTTP_OK);
+        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
     }
-
-
+    
     /**
-     * @Rest\Get("/competition/getcompetitions")
+     * @Rest\Get("/competitions/deleteAnswer")
+     */
+    public function deleteCompetitionAnswer(Request $request){
+
+        $id=$request->get("id");
+        $answer=$request->get("answerid");
+        if(empty($id) || empty($answer))
+        {
+            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $answer=$em->getRepository("IkotlinMainBundle:CompetitionAnswer")->find($answer);
+            if(!empty($u) && !empty($answer) && $answer->getIdUser()==$u) {
+                $em->remove($answer);
+                $em->flush();
+                return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
+    }
+    
+    /**
+     * @Rest\Get("/competitions/getCompetitions")
      */
     public function competitionListAction(Request $request){
         $id=$request->get("id");
@@ -107,9 +126,45 @@ class CompetitionController extends Controller
         }
         return new View(array("Error"=>"Wrong.."),Response::HTTP_OK);
     }
+    
+    
+    /***************************************** 
+                  SOLUTIONS
+    *****************************************/
+   
+    /**
+     * @Rest\Post("/competitions/addAnswer")
+     */
+    public function addAnswerCompetitionAction(Request $request){
+        $request=json_decode($request->getContent(),true);
+        $id=$request['id'];
+        $competition=$request["competitionid"];
+        if(empty($id)|| empty($competition))
+        {
+            return new View(array("Error"=>"Missing data to process.."),Response::HTTP_OK);
+        }
+        else{
+            $em = $this->getDoctrine()->getManager();
+            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
+            $competition=$em->getRepository("IkotlinMainBundle:Competition")->find($competition);
+
+            if(!empty($u) && !empty($competition)) {
+                $a=new CompetitionAnswer();
+                $a->setIdUser($u);
+                $a->setIdCompetition($competition);
+                $a->setContent($request['content']);
+                $competition->setSolved($competition->getSolved()+1);
+                $em->persist($competition);
+                $em->persist($a);
+                $em->flush();
+                return new View(array("resp"=>"OK"),Response::HTTP_OK);
+            }
+        }
+        return new View(array("Error"=>"Wrong authentification.."),Response::HTTP_OK);
+    }
 
     /**
-     * @Rest\Get("/competition/getanswers")
+     * @Rest\Get("/competitions/getAnswers")
      */
     public function answersListAction(Request $request){
         $id=$request->get("id");
@@ -126,7 +181,7 @@ class CompetitionController extends Controller
             if(!empty($u)) {
                 //do the work
                 $level=$request->get("level");
-                $competitions=$em->getRepository("IkotlinMainBundle:Competition_Answer")->getCompetitionAnswers($starts_at,$length,$level,$u);
+                $competitions=$em->getRepository("IkotlinMainBundle:CompetitionAnswer")->getCompetitionAnswers($starts_at,$length,$level,$u);
 
                 return new View(array("competitions"=>$competitions),Response::HTTP_OK);
             }
@@ -135,55 +190,7 @@ class CompetitionController extends Controller
     }
 
     /**
-     * @Rest\Get("/competition/delete")
-     */
-    public function deleteCompetitionAction(Request $request){
-
-        $id=$request->get("id");
-        $competition=$request->get("competitionid");
-        if(empty($id) || empty($competition))
-        {
-            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $competition=$em->getRepository("IkotlinMainBundle:Competition")->find($competition);
-            if(!empty($u) && !empty($competition) && $competition->getIdUser()==$u) {
-                $em->remove($competition);
-                $em->flush();
-                return new View(array("resp"=>"OK"),Response::HTTP_OK);
-            }
-        }
-        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
-    }
-
-    /**
-     * @Rest\Get("/competition/deleteanswer")
-     */
-    public function deleteCompetitionAnswer(Request $request){
-
-        $id=$request->get("id");
-        $answer=$request->get("answerid");
-        if(empty($id) || empty($answer))
-        {
-            return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $answer=$em->getRepository("IkotlinMainBundle:Competition_Answer")->find($answer);
-            if(!empty($u) && !empty($answer) && $answer->getIdUser()==$u) {
-                $em->remove($answer);
-                $em->flush();
-                return new View(array("resp"=>"OK"),Response::HTTP_OK);
-            }
-        }
-        return new View(array("Error"=>"Wrong data.."),Response::HTTP_OK);
-    }
-
-    /**
-     * @Rest\Get("/competition/getanswer")
+     * @Rest\Get("/competitions/getAnswers")
      */
     public function getAnswerAction(Request $request){
         $id=$request->get("id");
@@ -197,7 +204,7 @@ class CompetitionController extends Controller
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
             if(!empty($u)) {
                 //do the work
-                $answer=$em->getRepository("IkotlinMainBundle:Competition_Answer")->getCompetitionAnswerOptimized($answer);
+                $answer=$em->getRepository("IkotlinMainBundle:CompetitionAnswer")->getCompetitionAnswerOptimized($answer);
 
                 return new View(array("resp"=>$answer),Response::HTTP_OK);
             }
@@ -206,7 +213,7 @@ class CompetitionController extends Controller
     }
 
     /**
-     * @Rest\Get("/competition/getcompetition")
+     * @Rest\Get("/competitions/getCompetition")
      */
     public function getCompetitionAction(Request $request){
         $id=$request->get("id");
@@ -229,8 +236,8 @@ class CompetitionController extends Controller
     }
     
     
-        /**
-     * @Rest\Post("/competition/editanswer")
+    /**
+     * @Rest\Post("/competitions/editAnswer")
      */
     public function editAnswerCompetitionAction(Request $request){
         $request=json_decode($request->getContent(),true);
@@ -244,7 +251,7 @@ class CompetitionController extends Controller
         else{
             $em = $this->getDoctrine()->getManager();
             $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            $answer=$em->getRepository("IkotlinMainBundle:Competition_Answer")->find($answerid);
+            $answer=$em->getRepository("IkotlinMainBundle:CompetitionAnswer")->find($answerid);
             if(!empty($u) && !empty($competition)) {
                 $a=$answer;
                 $a->setContent($request['content']);

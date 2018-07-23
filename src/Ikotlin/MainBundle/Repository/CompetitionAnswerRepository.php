@@ -12,7 +12,7 @@ namespace Ikotlin\MainBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Ikotlin\MainBundle\Entity\User;
 
-class Competition_answerRepository extends  EntityRepository
+class CompetitionAnswerRepository extends  EntityRepository
 {
     public function getCompetitionAnswers($starts_at,$length,$level,User $u){
 
@@ -23,7 +23,7 @@ class Competition_answerRepository extends  EntityRepository
                 'c.id as idcompetition','c.title as competitiontitle','c.level as competitionlevel',
                 'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
 
-            ->from('IkotlinMainBundle:Competition_Answer', 'a')
+            ->from('IkotlinMainBundle:CompetitionAnswer', 'a')
             ->leftJoin(
                 'IKotlin\MainBundle\Entity\User','u',
                 \Doctrine\ORM\Query\Expr\Join::WITH,
@@ -54,7 +54,7 @@ class Competition_answerRepository extends  EntityRepository
             ->select('a.id','a.created','a.content',
                 'c.id as idcompetition','c.title as competitiontitle','c.level as competitionlevel',
                 'u.id as user_id', 'u.username as user_name','u.picture as user_picture')
-            ->from('IkotlinMainBundle:Competition_Answer', 'a')
+            ->from('IkotlinMainBundle:CompetitionAnswer', 'a')
             ->leftJoin(
                 'IKotlin\MainBundle\Entity\User',
                 'u',

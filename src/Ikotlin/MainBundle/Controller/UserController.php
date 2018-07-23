@@ -20,11 +20,11 @@ class UserController extends Controller {
      * @Rest\Post("/users/register")
      */
     public function registerUserAction(Request $request) {
-        $request = json_decode($request->getContent(), true);
-        $id = $request['id'];
-        $email = $request["email"];
-        $username = $request["username"];
-        $pictureUrl = $request["pictureUrl"];
+       // $request = json_decode($request->getContent(), true);
+        $id=$request->get("id");
+        $email = $request->get("email");
+        $username = $request->get("username");
+        $pictureUrl = $request->get("pictureUrl");
 
         if (empty($email) || empty($id) || empty($username)) {
             return new View(array("Error" => "Empty data (not created).."), Response::HTTP_OK);
@@ -53,7 +53,7 @@ class UserController extends Controller {
 
     
     /**
-     * @Rest\Get("/users/getbadges")
+     * @Rest\Get("/users/getBadges")
      */
     /*public function getAllBadgesAction(Request $request) {
         $id = $request->get("id");
@@ -72,7 +72,7 @@ class UserController extends Controller {
     }*/
     
      /**
-     * @Rest\Post("/users/addbadge")
+     * @Rest\Post("/users/addBadge")
      */
     public function addBadgeAction(Request $request){
 
@@ -99,7 +99,7 @@ class UserController extends Controller {
     }
     
      /**
-     * @Rest\Get("/users/hasbadge")
+     * @Rest\Get("/users/hasBadge")
      */
     public function isHasBadgeAction(Request $request) {
         $id = $request->get("id");
@@ -137,9 +137,9 @@ class UserController extends Controller {
     }
     
     /**
-     * @Rest\Post("/users/setprofilepicture")
+     * @Rest\Post("/users/setProfilePicture")
      */
-    public function setprofilepictureurlAction(Request $request) {
+    public function setProfilePictureUrlAction(Request $request) {
         $request = json_decode($request->getContent(), true);
         $id = $request['id'];
         $profile_picture = $request['profile_picture'];
@@ -161,7 +161,7 @@ class UserController extends Controller {
     
   
     /**
-     * @Rest\Post("/users/setusername")
+     * @Rest\Post("/users/setUsername")
      */
     public function setUsernameAction(Request $request) {
         $request = json_decode($request->getContent(), true);
