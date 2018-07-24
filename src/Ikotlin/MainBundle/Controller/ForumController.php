@@ -117,8 +117,8 @@ class ForumController extends Controller
      * @Rest\Post("/forums/editQuestion")
      */
     public function editQuestionAction(Request $request){
-        $id=$request['id'];
-        $questionId=$request['questionId'];
+        $id=$request->get("id");
+        $questionId=$request->get("questionId");
         if(empty($id) || empty($questionId))
         {
             return new View(array("Error"=>"Authentification.."),Response::HTTP_OK);
@@ -129,11 +129,10 @@ class ForumController extends Controller
             $forum=$em->getRepository("IkotlinMainBundle:ForumQuestion")->find($questionId);
             if(!empty($u) && !empty($forum) && $forum->getIdUser()==$u) {
                 $valid=true;
-                //do the work
-                if(!empty($request["subject"])) $forum->setSubject($request["subject"]); else $valid=false;
-                if(!empty($request["content"])) $forum->setContent($request["content"]); else $valid=false;
-                if(!empty($request["tags"])) $forum->setTags($request["tags"]);
-                $forum->setCode($request["code"]);
+                if(!empty($request->get("subject"))) $forum->setSubject($request->get("subject")); else $valid=false;
+                if(!empty($request->get("content"))) $forum->setContent($request->get("content")); else $valid=false;
+                if(!empty($request->get("tags"))) $forum->setTags(($request->get("tags")));
+                $forum->setCode(($request->get("code")));
                 $forum->setEdited(new \DateTime());
                 if($valid){
                     $em->persist($forum);

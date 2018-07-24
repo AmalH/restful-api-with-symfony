@@ -7,7 +7,7 @@ ikotlin_forums:
     prefix:   /
     type:     annotation
 ikotlin_competitions:
-    resource: "@IkotlinMainBundle/Controller/CompetitionController.php"
+    resource: "@IkotlinMainBundle/Controller/CompetitionsController.php"
     prefix:   /
     type:     annotation
 ikotlin_courses:
