@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Amal
@@ -7,18 +8,17 @@
  */
 
 namespace Ikotlin\MainBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ForumQuestion
  *
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\CourseRepository")
  * @ORM\Table(name="usercourses")
  */
+class Course {
 
-class Course
-{
-   
-    
     /**
      * @var integer
      *
@@ -27,7 +27,7 @@ class Course
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var \User
      *
@@ -44,14 +44,14 @@ class Course
      * @ORM\Column(name="courseindic", type="string", length=300, nullable=false)
      */
     private $courseindic;
-    
+
     /**
      * @var string
      *
      * @ORM\Column(name="finishedchapters", type="string", length=300, nullable=true, options={"default":"0"})
      */
     private $finishedchapters;
-    
+
     /**
      * @var string
      *
@@ -59,15 +59,13 @@ class Course
      */
     private $earnedbadges;
 
-
- 
     /**
      * Course constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
+        
     }
-  
+
     function getCourseindic() {
         return $this->courseindic;
     }
@@ -76,7 +74,6 @@ class Course
         $this->courseindic = $courseindic;
     }
 
-        
     function getUserid() {
         return $this->userid;
     }
@@ -100,9 +97,5 @@ class Course
     function setEarnedbadges($earnedbadges) {
         $this->earnedbadges = $earnedbadges;
     }
-
-
-
-
 
 }

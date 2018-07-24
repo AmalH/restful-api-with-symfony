@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Amal
@@ -7,15 +8,17 @@
  */
 
 namespace Ikotlin\MainBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * ForumQuestion
  *
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\ForumQuestionRepository")
  * @ORM\Table(name="forumquestions")
  */
+class ForumQuestion {
 
-class ForumQuestion{
     /**
      * @var integer
      *
@@ -24,7 +27,6 @@ class ForumQuestion{
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-
 
     /**
      * @var \User
@@ -92,14 +94,10 @@ class ForumQuestion{
      */
     private $edited;
 
-
-
-
     /**
      * ForumQuestion constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->setCreated(new \DateTime());
         $this->setViews(0);
         $this->setRating(0);
@@ -108,160 +106,140 @@ class ForumQuestion{
     /**
      * @return int
      */
-    public function getViews()
-    {
+    public function getViews() {
         return $this->views;
     }
 
     /**
      * @param int $views
      */
-    public function setViews($views)
-    {
+    public function setViews($views) {
         $this->views = $views;
     }
 
     /**
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
      * @param int $id
      */
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
     }
 
     /**
      * @return string
      */
-    public function getSubject()
-    {
+    public function getSubject() {
         return $this->subject;
     }
 
     /**
      * @param string $subject
      */
-    public function setSubject($subject)
-    {
+    public function setSubject($subject) {
         $this->subject = $subject;
     }
 
     /**
      * @return string
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->content;
     }
 
     /**
      * @param string $content
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
         $this->content = $content;
     }
 
     /**
      * @return int
      */
-    public function getRating()
-    {
+    public function getRating() {
         return $this->rating;
     }
 
     /**
      * @param int $rating
      */
-    public function setRating($rating)
-    {
+    public function setRating($rating) {
         $this->rating = $rating;
     }
 
     /**
      * @return string
      */
-    public function getTags()
-    {
+    public function getTags() {
         return $this->tags;
     }
 
     /**
      * @param string $tags
      */
-    public function setTags($tags)
-    {
+    public function setTags($tags) {
         $this->tags = $tags;
     }
 
     /**
      * @return \DateTime
      */
-    public function getCreated()
-    {
+    public function getCreated() {
         return $this->created;
     }
 
     /**
      * @param \DateTime $created
      */
-    public function setCreated($created)
-    {
+    public function setCreated($created) {
         $this->created = $created;
     }
 
     /**
      * @return \User
      */
-    public function getIdUser()
-    {
+    public function getIdUser() {
         return $this->idUser;
     }
 
     /**
      * @param \User $idUser
      */
-    public function setIdUser($idUser)
-    {
+    public function setIdUser($idUser) {
         $this->idUser = $idUser;
     }
 
     /**
      * @return string
      */
-    public function getCode()
-    {
+    public function getCode() {
         return $this->code;
     }
 
     /**
      * @param string $code
      */
-    public function setCode($code)
-    {
+    public function setCode($code) {
         $this->code = $code;
     }
 
     /**
      * @return \DateTime
      */
-    public function getEdited()
-    {
+    public function getEdited() {
         return $this->edited;
     }
 
     /**
      * @param \DateTime $edited
      */
-    public function setEdited($edited)
-    {
+    public function setEdited($edited) {
         $this->edited = $edited;
     }
 

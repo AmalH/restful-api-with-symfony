@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Amal
@@ -7,8 +8,8 @@
  */
 
 namespace Ikotlin\MainBundle\Entity;
-use Doctrine\ORM\Mapping as ORM;
 
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * ForumAnswer
@@ -16,9 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\AnswerRepository")
  * @ORM\Table(name="forumanswers")
  */
+class Answer {
 
-class Answer
-{
     /**
      * @var integer
      *
@@ -61,6 +61,7 @@ class Answer
      * @ORM\Column(name="rating", type="integer", nullable=true)
      */
     private $rating;
+
     /**
      * @var \DateTime
      *
@@ -71,8 +72,7 @@ class Answer
     /**
      * Answer constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
         $this->setCreated(new \DateTime());
         $this->setRating(0);
     }
@@ -80,96 +80,85 @@ class Answer
     /**
      * @return int
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
     /**
      * @param int $id
      */
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
     }
 
     /**
      * @return \User
      */
-    public function getIdUser()
-    {
+    public function getIdUser() {
         return $this->idUser;
     }
 
     /**
      * @param \User $idUser
      */
-    public function setIdUser($idUser)
-    {
+    public function setIdUser($idUser) {
         $this->idUser = $idUser;
     }
 
     /**
      * @return \ForumQuestion
      */
-    public function getIdForum()
-    {
+    public function getIdForum() {
         return $this->idForum;
     }
 
     /**
      * @param \ForumQuestion $idForum
      */
-    public function setIdForum($idForum)
-    {
+    public function setIdForum($idForum) {
         $this->idForum = $idForum;
     }
 
     /**
      * @return string
      */
-    public function getContent()
-    {
+    public function getContent() {
         return $this->content;
     }
 
     /**
      * @param string $content
      */
-    public function setContent($content)
-    {
+    public function setContent($content) {
         $this->content = $content;
     }
 
     /**
      * @return int
      */
-    public function getRating()
-    {
+    public function getRating() {
         return $this->rating;
     }
 
     /**
      * @param int $rating
      */
-    public function setRating($rating)
-    {
+    public function setRating($rating) {
         $this->rating = $rating;
     }
 
     /**
      * @return \DateTime
      */
-    public function getCreated()
-    {
+    public function getCreated() {
         return $this->created;
     }
 
     /**
      * @param \DateTime $created
      */
-    public function setCreated($created)
-    {
+    public function setCreated($created) {
         $this->created = $created;
     }
+
 }

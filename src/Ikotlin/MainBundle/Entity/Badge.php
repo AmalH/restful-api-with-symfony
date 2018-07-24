@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: Amal
@@ -7,18 +8,17 @@
  */
 
 namespace Ikotlin\MainBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Badge
  *
  * @ORM\Entity(repositoryClass="Ikotlin\MainBundle\Repository\BadgeRepository")
  * @ORM\Table(name="userbadges")
  */
+class Badge {
 
-class Badge
-{
-   
-    
     /**
      * @var integer
      *
@@ -27,7 +27,7 @@ class Badge
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
-    
+
     /**
      * @var \User
      *
@@ -44,26 +44,26 @@ class Badge
      * @ORM\Column(name="badgeindic", type="string", length=300, nullable=false)
      */
     private $badgeindic;
-    
-    
-     /**
+
+    /**
      * Badge constructor.
      */
-    public function __construct()
-    {
+    public function __construct() {
+        
     }
-    
+
     function getId() {
         return $this->id;
     }
 
-   function getUserid() {
+    function getUserid() {
         return $this->userid;
     }
 
     function setUserid($userid) {
         $this->userid = $userid;
     }
+
     function getBadgeindic() {
         return $this->badgeindic;
     }
@@ -75,6 +75,5 @@ class Badge
     function setBadgeindic($badgeindic) {
         $this->badgeindic = $badgeindic;
     }
-
 
 }

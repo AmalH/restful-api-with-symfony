@@ -20,8 +20,7 @@ class UserController extends Controller {
      * @Rest\Post("/users/register")
      */
     public function registerUserAction(Request $request) {
-       // $request = json_decode($request->getContent(), true);
-        $id=$request->get("id");
+        $id = $request->get("id");
         $email = $request->get("email");
         $username = $request->get("username");
         $pictureUrl = $request->get("pictureUrl");
@@ -51,54 +50,32 @@ class UserController extends Controller {
         return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
 
-    
     /**
-     * @Rest\Get("/users/getBadges")
+     * @Rest\Post("/users/addBadge")
      */
-    /*public function getAllBadgesAction(Request $request) {
+    public function addBadgeAction(Request $request) {
+
         $id = $request->get("id");
+        $badgeindic = $request->get("badgeindic");
 
         if (empty($id)) {
-            return new View(array("Error" => "Please provide id !"), Response::HTTP_OK);
+            return new View(array("Error" => "This user doesnt exist in database !"), Response::HTTP_OK);
         } else {
             $em = $this->getDoctrine()->getManager();
             $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
             if (!empty($u)) {
-                $badges=$em->getRepository("IkotlinMainBundle:Badge")->getUserBadges($id);
-                return new View(array("badges" =>$badges), Response::HTTP_ACCEPTED);
+                $badge = new Badge();
+                $badge->setUserid($u);
+                $badge->setBadgeindic($badgeindic);
+                $em->persist($badge);
+                $em->flush();
+                return new View(array("resp" => "OK"), Response::HTTP_OK);
             }
         }
-        return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
-    }*/
-    
-     /**
-     * @Rest\Post("/users/addBadge")
-     */
-    public function addBadgeAction(Request $request){
-
-        $id=$request->get("id");
-        $badgeindic=$request->get("badgeindic");
-
-        if(empty($id))
-        {
-            return new View(array("Error"=>"This user doesnt exist in database !"),Response::HTTP_OK);
-        }
-        else{
-            $em = $this->getDoctrine()->getManager();
-            $u= $em->getRepository("IkotlinMainBundle:User")->find($id);
-            if(!empty($u)) {
-                $badge= new Badge();
-                    $badge->setUserid($u);
-                    $badge->setBadgeindic($badgeindic);
-                    $em->persist($badge);
-                    $em->flush();
-                    return new View(array("resp"=>"OK"),Response::HTTP_OK);
-            }
-        }
-        return new View(array("Error"=>"Either user or course id is wrong !"),Response::HTTP_OK);
+        return new View(array("Error" => "Either user or course id is wrong !"), Response::HTTP_OK);
     }
-    
-     /**
+
+    /**
      * @Rest\Get("/users/hasBadge")
      */
     public function isHasBadgeAction(Request $request) {
@@ -111,13 +88,13 @@ class UserController extends Controller {
             $em = $this->getDoctrine()->getManager();
             $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
             if (!empty($u)) {
-                $badges=$em->getRepository("IkotlinMainBundle:Badge")->isUserHasBadge($id,$badgeindic);
-                return new View(array("badges" =>$badges), Response::HTTP_ACCEPTED);
+                $badges = $em->getRepository("IkotlinMainBundle:Badge")->isUserHasBadge($id, $badgeindic);
+                return new View(array("badges" => $badges), Response::HTTP_ACCEPTED);
             }
         }
         return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
-    
+
     /**
      * @Rest\Get("/users/getUser")
      */
@@ -130,12 +107,11 @@ class UserController extends Controller {
             $u = $em->getRepository("IkotlinMainBundle:User")->find($id);
             if (!empty($u)) {
                 return $u;
-              //  return new View(array("users" => $u), Response::HTTP_ACCEPTED);
             }
         }
         return new View(array("Error" => "Wrong authentification.."), Response::HTTP_OK);
     }
-    
+
     /**
      * @Rest\Post("/users/setProfilePicture")
      */
@@ -158,8 +134,7 @@ class UserController extends Controller {
         }
         return new View(array("Error" => "Wrong entries .."), Response::HTTP_OK);
     }
-    
-  
+
     /**
      * @Rest\Post("/users/setUsername")
      */
